@@ -47,17 +47,18 @@
                     var panel = obj.find(op.head).map(function() {
                         var head = $(this);
                         if(!head.hasClass(active)) {
-                            return head.next(op.group).hide()[0];
+                            return head.parent().find(op.group).hide()[0];
                         }
-                        return head.next(op.group)[0];
+                        return head.parent().find(op.group)[0];
                     });
 
                 // Bind event for showing content
                 obj.bind("show", function(e, bypass) {
                     var obj = $(e.target);
+
                     // ARIA attribute
                     obj.attr('aria-hidden', false)
-                        .prev()
+                        .parent().find(op.head)
                         .removeClass(inactive)
                         .addClass(active);
                     // Bypass method for instant display
@@ -72,7 +73,7 @@
                 obj.bind("hide", function(e, bypass) {
                     var obj = $(e.target);
                     obj.attr('aria-hidden', true)
-                        .prev()
+                        .parent().find(op.head)
                         .removeClass(active)
                         .addClass(inactive);
                     if(bypass) {
@@ -99,6 +100,7 @@
                 // Delegate click event to show/hide content.
                 obj.bind("click", function(e) {
                     var t = $(e.target);
+
                     // Check if header was clicked
                     if(!t.is(op.head)) {
                         // What about link inside header.
@@ -113,7 +115,8 @@
                     var num = sections.index(t),
                         cookieName = cookie + num,
                         cookieVal = num,
-                        content = t.next(op.group);
+                        content = t.parent().find(op.group);
+
                     // If content is already active, hide it.
                     if(t.hasClass(active)) {
                         content.trigger('hide');
@@ -123,6 +126,7 @@
                         }
                         return;
                     }
+
                     // Otherwise show it.
                     content.trigger('show');
                     cookieVal += 'open';
