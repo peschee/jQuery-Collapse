@@ -1,3 +1,6 @@
+/*jslint white: true, vars: true */
+/*global cookieSupport */
+
 /*
  * Collapse plugin for jQuery
  * http://github.com/danielstocks/jQuery-Collapse/
@@ -7,7 +10,9 @@
  * Released under the MIT, BSD, and GPL Licenses.
  */
 
+
 (function($) {
+    'use strict';
 
     // Use a cookie counter to allow multiple instances of the plugin
     var cookieCounter = 0;
@@ -28,10 +33,11 @@
                     this.hide();
                 }
             };
-            var op = $.extend(defaults, options);
 
-            // Default CSS classes
-            var active = "active",
+            var op = $.extend(defaults, options),
+
+                // Default CSS classes
+                active = "active",
                 inactive = "inactive";
 
             return this.each(function() {
@@ -39,11 +45,20 @@
                 // Increment coookie counter to ensure cookie name integrity
                 cookieCounter++;
                 var obj = $(this),
-                    // Find all headers and wrap them in <a> for accessibility.
-                    sections = obj.find(op.head).wrapInner('<a href="#"></a>'),
+                    // Find all headers
+                    sections = obj.find(op.head),
                     l = sections.length,
                     cookie = op.cookieName + "_" + cookieCounter;
-                    // Locate all panels directly following a header
+
+                    // wrap them in <a> for accessibility, only
+                    // if they are not already <a> elements
+                    $.each(sections, function (i) {
+                        if (this.tagName !== 'A') {
+                            $(this).wrapInner('<a href="#"></a>');
+                        }
+                    });
+
+                    // Locate all panels inside a collapsible element
                     var panel = obj.find(op.head).map(function() {
                         var head = $(this);
                         if(!head.hasClass(active)) {
@@ -84,7 +99,7 @@
                 });
 
                 // Look for existing cookies
-                if(cookieSupport) {
+                if (cookieSupport) {
                     for (var c=0;c<=l;c++) {
                         var val = $.cookie(cookie + c);
                         // Show content if associating cookie is found
