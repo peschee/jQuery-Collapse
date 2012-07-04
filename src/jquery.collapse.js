@@ -6,36 +6,36 @@
  * Copyright 2010, Daniel Stocks
  * Released under the MIT, BSD, and GPL Licenses.
  */
- 
+
 (function($) {
-    
+
     // Use a cookie counter to allow multiple instances of the plugin
     var cookieCounter = 0;
-    
+
     $.fn.extend({
         collapse: function(options) {
-            
+
             var defaults = {
                 head : "h3",
                 group : "div, ul",
                 cookieName : "collapse",
                 // Default function for showing content
-                show: function() { 
+                show: function() {
                     this.show();
                 },
                 // Default function for hiding content
-                hide: function() { 
+                hide: function() {
                     this.hide();
                 }
             };
             var op = $.extend(defaults, options);
-            
+
             // Default CSS classes
             var active = "active",
                 inactive = "inactive";
-            
+
             return this.each(function() {
-                
+
                 // Increment coookie counter to ensure cookie name integrity
                 cookieCounter++;
                 var obj = $(this),
@@ -45,13 +45,13 @@
                     cookie = op.cookieName + "_" + cookieCounter;
                     // Locate all panels directly following a header
                     var panel = obj.find(op.head).map(function() {
-                        var head = $(this)
+                        var head = $(this);
                         if(!head.hasClass(active)) {
                             return head.next(op.group).hide()[0];
                         }
                         return head.next(op.group)[0];
                     });
-    
+
                 // Bind event for showing content
                 obj.bind("show", function(e, bypass) {
                     var obj = $(e.target);
@@ -81,7 +81,7 @@
                         op.hide.call(obj);
                     }
                 });
-                
+
                 // Look for existing cookies
                 if(cookieSupport) {
                     for (var c=0;c<=l;c++) {
@@ -95,7 +95,7 @@
                         }
                     }
                 }
-                
+
                 // Delegate click event to show/hide content.
                 obj.bind("click", function(e) {
                     var t = $(e.target);
